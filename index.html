@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聖誕快樂 - 溫馨祝福</title>
+    <style>
+        /* 全局設定 */
+        :root {
+            --bg-top: #0f2027;
+            --bg-mid: #203a43;
+            --bg-bot: #2c5364;
+            --snow-color: #fff;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+            background: linear-gradient(to bottom, var(--bg-top), var(--bg-mid), var(--bg-bot));
+        }
+
+        /* 容器 */
+        .card-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            perspective: 1000px;
+        }
+
+        /* 月亮 */
+        .moon {
+            position: absolute;
+            top: 10%;
+            right: 15%;
+            width: 80px;
+            height: 80px;
+            background: #fdfcba;
+            border-radius: 50%;
+            box-shadow: 0 0 40px #fdfcba, 0 0 80px #fffee6;
+            animation: moonFloat 10s ease-in-out infinite alternate;
+            z-index: 1;
+        }
+
+        @keyframes moonFloat {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+
+        /* 地面雪景 */
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(to top, #fff, #e6e9f0);
+            border-radius: 100% 100% 0 0 / 20% 20% 0 0;
+            transform: scaleX(1.5);
+            z-index: 2;
+            box-shadow: 0 -10px 20px rgba(255,255,255,0.3);
+        }
+
+        /* 聖誕樹容器 */
+        .tree-container {
+            position: absolute;
+            bottom: 80px;
+            z-index: 3;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .tree-container:hover {
+            transform: scale(1.05);
+        }
+
+        .tree-container.shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        /* CSS 聖誕樹層次 */
+        .tree-layer {
+            width: 0;
+            height: 0;
+            border-left: 60px solid transparent;
+            border-right: 60px solid transparent;
+            border-bottom: 80px solid #1a5c37;
+            position: relative;
+            margin-bottom: -30px;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.3));
+        }
+
+        .tree-layer:nth-child(2) {
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 70px solid #237a4b;
+        }
+
+        .tree-layer:nth-child(3) {
+            border-left: 40px solid transparent;
+            border-right: 40px solid transparent;
+            border-bottom: 60px solid #2d995f;
+        }
+
+        /* 樹幹 */
+        .trunk {
+            width: 30px;
+            height: 40px;
+            background: #4a332a;
+            margin: 0 auto;
+            border-radius: 0 0 5px 5px;
+        }
+
+        /* 星星裝飾 */
+        .star-topper {
+            width: 30px;
+            height: 30px;
+            background: #ffd700;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            position: absolute;
+            top: -150px; /* Adjust based on tree height */
+            left: 50%;
+            transform: translateX(-50%);
+            animation: shine 2s infinite alternate;
+            z-index: 5;
+            box-shadow: 0 0 15px #ffd700;
+        }
+
+        /* 樹上的裝飾球 */
+        .ornament {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: red;
+            box-shadow: 0 0 5px red;
+            animation: twinkle 1.5s infinite alternate;
+        }
+
+        @keyframes shine {
+            from { filter: drop-shadow(0 0 5px #ffd700); }
+            to { filter: drop-shadow(0 0 20px #ffd700); }
+        }
+
+        @keyframes twinkle {
+            from { opacity: 0.5; transform: scale(1); }
+            to { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* 文字訊息 */
+        .message-box {
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: white;
+            z-index: 10;
+            text-shadow: 0 0 10px rgba(255,255,255,0.8);
+            width: 80%;
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            opacity: 0;
+            animation: fadeInDown 2s forwards 0.5s;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            opacity: 0;
+            border-right: 2px solid white;
+            white-space: nowrap;
+            overflow: hidden;
+            margin: 0 auto;
+            max-width: 0;
+            animation: typing 3.5s steps(40, end) forwards 2s, blink .75s step-end infinite;
+        }
+
+        .hint {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            opacity: 0;
+            color: rgba(255,255,255,0.7);
+            animation: fadeIn 2s forwards 4s;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @keyframes typing {
+            from { max-width: 0; }
+            to { max-width: 100%; }
+        }
+
+        @keyframes blink {
+            from, to { border-color: transparent; }
+            50% { border-color: white; }
+        }
+
+        /* 雪花特效 */
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            pointer-events: none;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh); }
+        }
+
+        /* 音樂控制按鈕樣式 */
+        .music-control {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .music-control:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.1);
+        }
+
+        .music-playing {
+            animation: musicRotate 3s linear infinite;
+            background: rgba(255, 215, 0, 0.3);
+            border-color: #ffd700;
+            color: #ffd700;
+        }
+
+        @keyframes musicRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 響應式調整 */
+        @media (max-width: 600px) {
+            .title { font-size: 2rem; }
+            .subtitle { font-size: 1rem; white-space: normal; border: none; animation: fadeIn 2s forwards 2s; max-width: 100%; }
+            .moon { width: 50px; height: 50px; right: 10%; }
+            .music-control { top: 15px; right: 15px; width: 35px; height: 35px; }
+            /* 手機版調整人物位置：靠近聖誕樹，且確保不被遮擋 */
+            .person-image {
+                height: 160px; 
+                left: 50%; 
+                /* X軸偏移：+40px 讓人物站在樹的右側稍微前方 */
+                transform: translateX(40px);
+                bottom: 95px;
+                z-index: 4; /* 提高層級，確保在樹的前面，不被遮擋 */
+            }
+        }
+
+        /* 新增：漂浮祝賀詞樣式 */
+        .floating-wish {
+            position: absolute;
+            color: #ffd700;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5), 2px 2px 2px rgba(0,0,0,0.5);
+            pointer-events: none;
+            z-index: 100;
+            white-space: nowrap;
+            animation: floatUpFade 2s ease-out forwards;
+        }
+
+        @keyframes floatUpFade {
+            0% { opacity: 0; transform: translateY(0) scale(0.5) rotate(-5deg); }
+            20% { opacity: 1; transform: translateY(-30px) scale(1.2) rotate(5deg); }
+            100% { opacity: 0; transform: translateY(-120px) scale(1) rotate(0deg); }
+        }
+
+        /* 新增：人物圖片/影片樣式 */
+        .person-image {
+            position: absolute;
+            left: 50%;
+            /* 調整 X 軸：將人物移動到聖誕樹的右側 (約 10px 偏移)，緊鄰樹木 */
+            transform: translateX(65px); 
+            bottom: 100px; /* 放置在雪地上方 */
+            height: 220px; /* 增加人物高度以強調動態效果 */
+            width: auto;
+            z-index: 3; /* 與樹木和地面同一層 */
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5)); /* 增加陰影使其更融入場景 */
+            pointer-events: none; /* 讓點擊穿透到背景或樹木 */
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="card-container">
+        
+        <!-- 音樂控制按鈕 -->
+        <div class="music-control" id="musicBtn" title="播放/暫停音樂">
+            🎵
+        </div>
+
+        <!-- 背景音樂 -->
+        <!-- 重要：請確保 mp3 檔案與此 html 檔案位於同一資料夾 -->
+        <audio id="bgm" loop preload="auto">
+            <source src="we-wish-you-a-merry-christmas-444573.mp3" type="audio/mpeg">
+        </audio>
+
+        <!-- 文字區域 -->
+        <div class="message-box">
+            <div class="title">Merry Christmas</div>
+            <div class="subtitle">願這個冬夜，白雪為你帶來平安與喜樂</div>
+            <div class="hint">（點擊聖誕樹，搖下更多祝福）</div>
+        </div>
+
+        <!-- 月亮 -->
+        <div class="moon"></div>
+
+        <!-- 新增：人物圖片 (使用 PNG 檔) -->
+        <img src="transparent_anim_1765961217613.png" 
+               alt="聖誕賀卡人物" 
+               class="person-image" 
+               onerror="this.onerror=null; this.src='https://placehold.co/220x220/000000/FFFFFF?text=Image+Placeholder'">
+        
+        <!-- 聖誕樹組件 -->
+        <div class="tree-container" id="tree">
+            <div class="star-topper"></div>
+            <!-- 樹葉層 (上到下) -->
+            <div class="tree-layer" style="display:flex; justify-content:center;">
+                <!-- 裝飾 -->
+                <div class="ornament" style="left: -10px; top: 60px; background: #ff4d4d;"></div>
+            </div>
+            <div class="tree-layer" style="display:flex; justify-content:center;">
+                 <div class="ornament" style="right: -20px; top: 60px; background: #ffff4d;"></div>
+                 <div class="ornament" style="left: 0px; top: 40px; background: #4d94ff;"></div>
+            </div>
+            <div class="tree-layer" style="display:flex; justify-content:center;">
+                <div class="ornament" style="left: -30px; top: 70px; background: #ff99cc;"></div>
+                <div class="ornament" style="right: 15px; top: 50px; background: white;"></div>
+            </div>
+            <!-- 樹幹 -->
+            <div class="trunk"></div>
+        </div>
+
+        <!-- 地面 -->
+        <div class="ground"></div>
+
+    </div>
+
+    <script>
+        // 雪花生成邏輯
+        function createSnowflake(isStorm = false) {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            
+            // 隨機大小
+            const size = Math.random() * 5 + 2 + 'px';
+            snowflake.style.width = size;
+            snowflake.style.height = size;
+
+            // 隨機位置
+            snowflake.style.left = Math.random() * 100 + 'vw';
+            
+            // 隨機透明度
+            snowflake.style.opacity = Math.random() * 0.7 + 0.3;
+
+            // 如果是暴風雪模式，速度更快
+            const duration = isStorm ? (Math.random() * 2 + 1) + 's' : (Math.random() * 5 + 5) + 's';
+            snowflake.style.animationDuration = duration;
+
+            // 加入一些水平搖擺
+            snowflake.style.transform = `translateX(${Math.random() * 20 - 10}px)`;
+
+            document.body.appendChild(snowflake);
+
+            // 動畫結束後移除元素以節省記憶體
+            setTimeout(() => {
+                snowflake.remove();
+            }, isStorm ? 3000 : 10000);
+        }
+
+        // 持續下雪
+        setInterval(() => createSnowflake(false), 200);
+
+        // 新增：祝賀詞清單
+        const wishes = [
+            "🎄 聖誕快樂！",
+            "✨ 心想事成",
+            "🎁 禮物滿滿",
+            "🍎 平安喜樂",
+            "⛄ 冬日溫暖",
+            "🌟 夢想成真",
+            "🔔 佳節愉快",
+            "💖 幸福安康",
+            "🧧 吉祥如意",
+            "🎉 好運連連",
+            "👨‍👩‍👧‍👦 闔家平安",
+            "😊 笑口常開",
+            "🍀 萬事順心",
+            "💪 身體健康",
+            "🦄 奇蹟降臨",
+            "🍭 甜蜜滿分",
+            "🌈 前程似錦",
+            "💖 愛你一萬年",
+            "☀️ 溫暖如初"
+        ];
+
+        // 新增：顯示漂浮祝賀詞函式
+        function showWish() {
+            const wishText = wishes[Math.floor(Math.random() * wishes.length)];
+            const wishEl = document.createElement('div');
+            wishEl.classList.add('floating-wish');
+            wishEl.textContent = wishText;
+
+            // 隨機位置設定 (在樹的上方附近)
+            const randomOffset = Math.random() * 100 - 50; // 左右隨機偏移
+            wishEl.style.left = `calc(50% + ${randomOffset}px)`;
+            wishEl.style.bottom = `${200 + Math.random() * 50}px`;
+            
+            // 隨機顏色變化 (金、紅、青、白)
+            const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#ffffff'];
+            wishEl.style.color = colors[Math.floor(Math.random() * colors.length)];
+
+            document.querySelector('.card-container').appendChild(wishEl);
+
+            // 動畫結束後移除 DOM 元素
+            setTimeout(() => {
+                wishEl.remove();
+            }, 2000);
+        }
+
+        // 音樂控制邏輯
+        const bgm = document.getElementById('bgm');
+        const musicBtn = document.getElementById('musicBtn');
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                bgm.pause();
+                musicBtn.classList.remove('music-playing');
+            } else {
+                bgm.play().then(() => {
+                    musicBtn.classList.add('music-playing');
+                }).catch(e => {
+                    console.log("播放被阻擋或檔案未找到", e);
+                    // 錯誤訊息輸出到控制台
+                    if(e.name === "NotSupportedError" || e.name === "NetworkError") {
+                         console.error("錯誤：找不到音樂檔案，請確認 mp3 檔名正確且在同一目錄。");
+                    }
+                });
+            }
+            isPlaying = !isPlaying;
+        }
+
+        musicBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // 避免觸發全局點擊
+            toggleMusic();
+        });
+
+        // 嘗試在第一次點擊頁面時自動播放
+        function autoPlayOnFirstClick() {
+            if (!isPlaying) {
+                bgm.play().then(() => {
+                    isPlaying = true;
+                    musicBtn.classList.add('music-playing');
+                    // 移除監聽器，避免重複觸發
+                    document.removeEventListener('click', autoPlayOnFirstClick);
+                }).catch(e => {
+                    // 如果還是被阻擋，就等待下一次點擊
+                    console.log("自動播放等待互動");
+                });
+            }
+        }
+        document.addEventListener('click', autoPlayOnFirstClick);
+
+
+        // 點擊互動
+        const tree = document.getElementById('tree');
+        tree.addEventListener('click', (e) => {
+            
+            // 搖晃樹
+            tree.classList.add('shake');
+
+            // 新增：顯示祝賀詞
+            showWish();
+            
+            // 觸發暴風雪特效
+            for(let i = 0; i < 50; i++) {
+                setTimeout(() => createSnowflake(true), i * 50);
+            }
+
+            // 移除搖晃 class 以便下次觸發
+            setTimeout(() => {
+                tree.classList.remove('shake');
+            }, 500);
+        });
+
+        // 初始化一些雪花，讓畫面一開始就有雪
+        for(let i=0; i<30; i++){
+            setTimeout(() => createSnowflake(false), Math.random() * 2000);
+        }
+
+    </script>
+</body>
+</html>
