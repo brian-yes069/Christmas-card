@@ -288,6 +288,10 @@
                 bottom: 95px;
                 z-index: 4; /* 提高層級，確保在樹的前面，不被遮擋 */
             }
+            /* 新增：手機版調整星星位置，避免遮擋文字 */
+            .star-topper {
+                top: -100px; /* 從 -150px 調整為 -100px，將星星往下移動 50px */
+            }
         }
 
         /* 新增：漂浮祝賀詞樣式 */
@@ -491,21 +495,20 @@
             toggleMusic();
         });
 
-        // 嘗試在第一次點擊頁面時自動播放
-        function autoPlayOnFirstClick() {
-            if (!isPlaying) {
-                bgm.play().then(() => {
-                    isPlaying = true;
-                    musicBtn.classList.add('music-playing');
-                    // 移除監聽器，避免重複觸發
-                    document.removeEventListener('click', autoPlayOnFirstClick);
-                }).catch(e => {
-                    // 如果還是被阻擋，就等待下一次點擊
-                    console.log("自動播放等待互動");
-                });
-            }
+        // 嘗試在載入時立即自動播放音樂
+        // 根據瀏覽器最新的自動播放政策，這通常會被阻擋，直到使用者點擊頁面。
+        // 如果播放成功，則 isPlaying 會設為 true，音樂圖標會旋轉。
+        try {
+            bgm.play().then(() => {
+                isPlaying = true;
+                musicBtn.classList.add('music-playing');
+            }).catch(e => {
+                console.warn("音樂自動播放被瀏覽器阻擋，需要使用者點擊才能播放。");
+                isPlaying = false;
+            });
+        } catch (e) {
+            console.error("嘗試自動播放音樂時發生錯誤:", e);
         }
-        document.addEventListener('click', autoPlayOnFirstClick);
 
 
         // 點擊互動
