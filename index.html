@@ -283,8 +283,8 @@
             .person-image {
                 height: 160px; 
                 left: 50%; 
-                /* X軸偏移：+40px 讓人物站在樹的右側稍微前方 */
-                transform: translateX(40px);
+                /* X軸偏移：-20px 讓人物站在樹的左側更靠近樹木 (已更新) */
+                transform: translateX(-20px);
                 bottom: 95px;
                 z-index: 4; /* 提高層級，確保在樹的前面，不被遮擋 */
             }
@@ -313,8 +313,8 @@
         .person-image {
             position: absolute;
             left: 50%;
-            /* 調整 X 軸：將人物移動到聖誕樹的右側 (約 10px 偏移)，緊鄰樹木 */
-            transform: translateX(65px); 
+            /* 調整 X 軸：將人物移動到聖誕樹的左側 (調整為 -40px，使其更靠近聖誕樹) (已更新) */
+            transform: translateX(-40px); 
             bottom: 100px; /* 放置在雪地上方 */
             height: 220px; /* 增加人物高度以強調動態效果 */
             width: auto;
